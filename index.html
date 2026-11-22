@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eef1f4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1217" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-title" content="Treino">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Treino</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f4;--card:#fff;--ink:#12161c;--mut:#6b7684;--line:#dfe4ea;--field:#f3f5f8;--a:#f97316;--b:#3b82f6;--c:#10b981;--acc:var(--a);--bad:#e11d48;color-scheme:light dark}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1217;--card:#171d25;--ink:#eef1f4;--mut:#8b97a6;--line:#252d38;--field:#0e1217}}
+body[data-t=B]{--acc:var(--b)}body[data-t=C]{--acc:var(--c)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:150px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.35 Barlow,system-ui,sans-serif;padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(10px + env(safe-area-inset-top)) 14px 8px}
+.row{display:flex;align-items:center;gap:10px}
+h1{margin:0;font:700 26px/1 "Barlow Condensed",sans-serif;flex:1;letter-spacing:.2px}
+.ic{border:0;background:var(--card);color:var(--ink);height:40px;min-width:40px;border-radius:12px;font:600 14px Barlow,sans-serif;padding:0 12px}
+.ic.warn{background:var(--bad);color:#fff}
+input[type=date]{height:40px;border:0;border-radius:12px;background:var(--card);color:var(--ink);font:600 14px Barlow,sans-serif;padding:0 10px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.tab{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;height:52px;font:700 20px "Barlow Condensed",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.tab small{font:500 11px Barlow,sans-serif;color:var(--mut);margin-top:3px}
+.tab[aria-selected=true]{background:var(--acc);border-color:var(--acc);color:#fff}
+.tab[aria-selected=true] small{color:#ffffffd9}
+main{padding:6px 14px}
+.hint{color:var(--mut);font-size:13px;margin:4px 2px 10px}
+.banner{background:var(--card);border-left:4px solid var(--bad);border-radius:10px;padding:10px 12px;margin:0 0 10px;font-size:14px}
+.card{background:var(--card);border-radius:18px;padding:12px 12px 10px;margin-bottom:12px}
+.ch{display:flex;align-items:baseline;gap:8px}
+.ch h2{margin:0;font:700 21px/1.1 "Barlow Condensed",sans-serif;flex:1}
+.meta{font-size:13px;color:var(--mut);white-space:nowrap}
+.rep{white-space:nowrap;border:0;background:none;color:var(--acc);font:600 13px Barlow,sans-serif;padding:6px 0 6px 6px}
+.note{color:var(--mut);font-size:12.5px;margin:2px 0 4px}
+.set{display:grid;grid-template-columns:34px 1fr 16px 1fr;gap:8px;align-items:center;margin-top:8px}
+.n{width:34px;height:34px;border-radius:50%;background:var(--field);color:var(--mut);display:grid;place-items:center;font:700 16px "Barlow Condensed",sans-serif}
+.set.done .n{background:var(--acc);color:#fff}
+.x{color:var(--mut);text-align:center}
+.f{position:relative}
+.f input{width:100%;height:52px;border:2px solid transparent;border-radius:12px;background:var(--field);color:var(--ink);font:600 24px "Barlow Condensed",sans-serif;text-align:center;padding:0 30px 0 6px}
+.f input::placeholder{color:var(--mut);opacity:.55}
+.f input:focus{outline:none;border-color:var(--acc)}
+.f input.bad{border-color:var(--bad)}
+.f i{position:absolute;right:9px;top:50%;transform:translateY(-50%);font:500 12px Barlow,sans-serif;color:var(--mut);font-style:normal;pointer-events:none}
+.obs{width:100%;height:40px;margin-top:10px;border:0;border-radius:10px;background:var(--field);color:var(--ink);font:400 15px Barlow,sans-serif;padding:0 12px}
+.obs:focus{outline:2px solid var(--acc)}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(transparent,var(--bg) 30%)}
+.go{width:100%;height:58px;border:0;border-radius:16px;background:var(--acc);color:#fff;font:700 22px "Barlow Condensed",sans-serif;letter-spacing:.3px}
+.go:disabled{opacity:.45}
+#toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:12px;font-weight:600;max-width:90%;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.on{opacity:1}
+dialog{border:0;border-radius:18px;background:var(--card);color:var(--ink);width:min(92vw,420px);padding:18px}
+dialog::backdrop{background:#0008}
+dialog label{display:block;font-weight:600;margin:12px 0 4px}
+dialog input{width:100%;height:46px;border:2px solid var(--line);border-radius:10px;background:var(--field);color:var(--ink);font:400 16px Barlow,sans-serif;padding:0 10px}
+dialog p{color:var(--mut);font-size:13px;margin:8px 0 0}
+.btns{display:flex;gap:8px;margin-top:16px}.btns button{flex:1;height:46px;border:0;border-radius:12px;font:600 16px Barlow,sans-serif;background:var(--field);color:var(--ink)}.btns .ok{background:var(--acc);color:#fff}
+.edit{display:block;margin:4px 0 16px;border:2px dashed var(--line);background:none;color:var(--mut);border-radius:14px;height:48px;width:100%;font:600 15px Barlow,sans-serif}
+#ed{width:min(94vw,460px);max-height:90vh;overflow:auto}
+.er{background:var(--field);border-radius:14px;padding:10px;margin-top:10px}
+.er input{width:100%;height:42px;border:2px solid transparent;border-radius:10px;background:var(--card);color:var(--ink);font:500 16px Barlow,sans-serif;padding:0 10px}
+.er input:focus{outline:none;border-color:var(--acc)}
+.er label{font-weight:500;font-size:12.5px;color:var(--mut);margin:0 0 3px}
+.e2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.eb{display:flex;gap:6px;margin-top:8px}.eb button{flex:1;height:38px;border:0;border-radius:10px;background:var(--card);color:var(--ink);font:600 14px Barlow,sans-serif}.eb [data-m=rm]{color:var(--bad)}
+.add,.rst{display:block;width:100%;height:46px;margin-top:10px;border:2px dashed var(--line);background:none;color:var(--acc);border-radius:12px;font:600 15px Barlow,sans-serif}.rst{border:0;color:var(--mut);font-size:13px;height:38px;margin-top:6px}
+body[data-t=D]{--acc:#8b5cf6;padding-bottom:28px}body[data-t=D] .bar{display:none}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.tile{background:var(--card);border-radius:16px;padding:12px 6px;text-align:center}
+.tile b{display:block;font:700 30px/1 "Barlow Condensed",sans-serif;color:var(--acc)}
+.tile span{font-size:12px;color:var(--mut);line-height:1.2;display:block;margin-top:4px}
+.ph{margin:0 0 2px;font:700 21px/1.1 "Barlow Condensed",sans-serif}
+.sub{color:var(--mut);font-size:13px;margin:0 0 8px}
+.prog{height:12px;border-radius:99px;background:var(--field);overflow:hidden;margin:8px 0 12px}.prog i{display:block;height:100%;background:var(--c);border-radius:99px}
+.big{font:700 34px/1 "Barlow Condensed",sans-serif}.big small{font:500 15px Barlow,sans-serif;color:var(--mut)}
+svg{width:100%;height:auto;display:block}.gl{stroke:var(--line)}.gt{fill:var(--mut);font:500 11px Barlow,sans-serif}
+.goal{stroke:var(--c);stroke-dasharray:4 4;stroke-width:1.5}.ln{fill:none;stroke:var(--acc);stroke-width:3;stroke-linejoin:round}
+.dot{fill:var(--card);stroke:var(--acc);stroke-width:3}.bar1{fill:var(--acc)}
+.evo{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--line)}.evo b{flex:1;font-weight:600;min-width:0}
+.evo span{color:var(--mut);font-size:14px;white-space:nowrap}
+.chip{font:700 15px "Barlow Condensed",sans-serif;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.up{background:#d1fae5;color:#047857}.dn{background:#ffe4e6;color:#be123c}.eq{background:var(--field);color:var(--mut)}
+@media(prefers-reduced-motion:reduce){#toast{transition:none}}
+</style>
+</head>
+<body data-t="A">
+<header>
+  <div class="row"><h1>Treino</h1><button class="ic warn" id="pend" hidden></button><input type="date" id="data" aria-label="Data do treino"><button class="ic" id="cfg" aria-label="Configurar">Config</button></div>
+  <div class="tabs" role="tablist" id="tabs"></div>
+</header>
+<main id="main"></main>
+<div class="bar"><button class="go" id="go">Registrar treino</button></div>
+<div id="toast" role="status"></div>
+<dialog id="dlg">
+  <h2 style="margin:0;font:700 22px 'Barlow Condensed',sans-serif">Ligação com a planilha</h2>
+  <label for="url">Link do Apps Script (termina em /exec)</label><input id="url" inputmode="url" autocapitalize="off" autocomplete="off">
+  <label for="tok">Senha</label><input id="tok" autocapitalize="off" autocomplete="off">
+  <p>A senha é a mesma que está no início do código do Apps Script (constante SENHA).</p>
+  <div class="btns"><button id="x">Cancelar</button><button class="ok" id="save">Salvar e testar</button></div>
+</dialog>
+<dialog id="ed">
+  <h2 id="edt" style="margin:0;font:700 22px 'Barlow Condensed',sans-serif">Editar treino</h2>
+  <label for="edn">Nome do treino</label><input id="edn" placeholder="Ex.: Push" autocomplete="off">
+  <div id="edl"></div>
+  <button class="add" id="eda">+ Adicionar exercício</button>
+  <p>Se você renomear um exercício, a "última vez" dele recomeça do zero. Mudar só séries ou reps não afeta o histórico.</p>
+  <div class="btns"><button id="edx">Cancelar</button><button class="ok" id="eds">Salvar treino</button></div>
+  <button class="rst" id="edr">Restaurar treino original</button>
+</dialog>
+<script>
+const EX={
+A:[['Supino inclinado 30°',4,'6–10'],['Desenvolvimento máquina',2,'8–12'],['Elevação lateral',4,'12–20'],['Crucifixo máquina',2,'10–15'],['Tríceps corda',3,'10–15'],['Tríceps francês',3,'10–15'],['Crunch na polia',3,'10–15']],
+B:[['Barra fixa',3,'3–5','Peso = carga extra. Digite 0 se for só o corpo.'],['Remada baixa',3,'8–12'],['Puxada alta fechada',2,'10–12'],['Crucifixo inverso',3,'12–20'],['Encolhimento',3,'10–15'],['Rosca 45°',3,'8–12'],['Abdominal máquina',3,'10–15']],
+C:[['Barra fixa',3,'4–5','Primeiro, submáxima: pare com 2 reps na reserva. Peso = carga extra (0 = só o corpo).'],['Leg press',3,'8–12'],['Mesa flexora',3,'10–15'],['Cadeira extensora',2,'10–15'],['Stiff com halteres',2,'8–12'],['Panturrilha',3,'10–15'],['Rosca inversa',3,'10–15'],['Tríceps corda',2,'10–15'],['Elevação lateral',3,'12–20'],['Elevação de pernas',3,'10–15']]};
+const NOME={A:'Push',B:'Pull',C:'Legs'};
+const DEF=(()=>{const o={t:0};for(const k of 'ABC')o[k]={n:NOME[k],ex:EX[k]};return o})();
+const $=s=>document.querySelector(s), J=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}}, S=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+let T=localStorage.getItem('t')||'A', last=J('last',{}), busy=false, P=J('plano',null)||DEF, E=null;
+const hoje=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),3200)};
+const num=v=>parseFloat(String(v).replace(',','.'));
+const dr=()=>J('d'+T,{});
+
+function tabs(){ $('#tabs').innerHTML=['A','B','C'].map(k=>`<button class="tab" role="tab" data-k="${k}" aria-selected="${k==T}">${k}<small>${P[k].n}</small></button>`).join('')+`<button class="tab" role="tab" data-k="D" aria-selected="${T=='D'}">Painel<small>progresso</small></button>`;}
+function render(){
+  document.body.dataset.t=T; tabs(); if(T==='D')return painel(); const d=dr(); let h='';
+  if(!J('cfg',{}).url) h+='<div class="banner">Falta ligar a planilha. Toque em <b>Config</b> e cole o link do Apps Script. Enquanto isso, o que você digitar fica salvo no celular.</div>';
+  h+='<p class="hint">Números em cinza = última vez que você fez aquela série.</p>';
+  P[T].ex.forEach(([ex,n,meta,nota],i)=>{
+    h+=`<section class="card" data-i="${i}"><div class="ch"><h2>${ex}</h2><span class="meta">meta ${meta}</span><button class="rep" data-rep="${i}">Repetir última</button></div>${nota?`<div class="note">${nota}</div>`:''}`;
+    for(let s=1;s<=n;s++){const l=last[ex+'|'+s]||{},v=d[ex+'|'+s]||['',''];
+      h+=`<div class="set ${v[1]!==''?'done':''}"><div class="n">${s}</div><div class="f"><input inputmode="decimal" data-k="${ex}|${s}" data-j="0" value="${v[0]}" placeholder="${l.peso??''}" aria-label="Peso série ${s}"><i>kg</i></div><span class="x">×</span><div class="f"><input inputmode="numeric" data-k="${ex}|${s}" data-j="1" value="${v[1]}" placeholder="${l.reps??''}" aria-label="Repetições série ${s}"><i>reps</i></div></div>`}
+    h+=`<input class="obs" data-o="${ex}" value="${(d['o:'+ex]||'').replace(/"/g,'&quot;')}" placeholder="Observação (opcional)"></section>`});
+  h+='<button class="edit" id="edit">Editar este treino</button>';
+  $('#main').innerHTML=h; count();
+}
+function count(){const d=dr();let n=0;P[T].ex.forEach(([ex,q])=>{for(let s=1;s<=q;s++){const v=d[ex+'|'+s];if(v&&(v[0]!==''||v[1]!==''))n++}});const b=$('#go');b.disabled=!n||busy;b.textContent=n?`Registrar treino ${T} · ${n} ${n>1?'séries':'série'}`:'Registrar treino';return n}
+function pend(){const p=J('pend',[]),b=$('#pend');b.hidden=!p.length;b.textContent=p.length+' a enviar'}
+
+$('#tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;T=b.dataset.k;localStorage.setItem('t',T);render();scrollTo(0,0)});
+$('#main').addEventListener('input',e=>{const t=e.target,d=dr();
+  if(t.dataset.k){const v=d[t.dataset.k]||['',''];v[t.dataset.j]=t.value;d[t.dataset.k]=v;t.classList.remove('bad');t.closest('.set').classList.toggle('done',v[1]!=='')}
+  else if(t.dataset.o){d['o:'+t.dataset.o]=t.value}
+  S('d'+T,d);count()});
+$('#main').addEventListener('click',e=>{const b=e.target.closest('[data-rep]');if(!b)return;
+  const [ex,n]=P[T].ex[b.dataset.rep],d=dr();let any=false;
+  for(let s=1;s<=n;s++){const l=last[ex+'|'+s];if(l){d[ex+'|'+s]=[String(l.peso),String(l.reps)];any=true}}
+  if(!any)return toast('Ainda não há registro anterior desse exercício.');
+  S('d'+T,d);render()});
+
+async function post(rows){const c=J('cfg',{});
+  const r=await fetch(c.url,{method:'POST',body:JSON.stringify({senha:c.tok,rows})});const j=await r.json();if(!j.ok)throw new Error(j.erro||'erro');return j}
+async function puxar(){const c=J('cfg',{});if(!c.url)return false;
+  const r=await fetch(c.url+'?senha='+encodeURIComponent(c.tok||''));const j=await r.json();if(!j.ok)throw new Error(j.erro||'erro');
+  last=j.ultimas||{};S('last',last);if(j.plano&&j.plano.t>(P.t||0)){P=j.plano;S('plano',P)}return true}
+async function reenviar(){if(localStorage.getItem('planoPend'))sendPlano();const p=J('pend',[]);if(!p.length||!J('cfg',{}).url)return;
+  try{await post(p.flat());S('pend',[]);pend();toast('Treinos pendentes enviados.');puxar().then(render).catch(()=>{})}catch(e){}}
+
+$('#go').onclick=async()=>{
+  const d=dr(),rows=[];let bad=null;
+  P[T].ex.forEach(([ex,q,meta])=>{let o=d['o:'+ex]||'';
+    for(let s=1;s<=q;s++){const v=d[ex+'|'+s]||['',''];if(v[0]===''&&v[1]==='')continue;
+      if(v[0]===''||v[1]===''||isNaN(num(v[0]))||isNaN(num(v[1]))){bad=bad||{k:ex+'|'+s,j:v[0]===''||isNaN(num(v[0]))?0:1};continue}
+      rows.push({data:$('#data').value,treino:T,exercicio:ex,serie:s,meta,peso:num(v[0]),reps:num(v[1]),obs:o});o=''}});
+  if(bad){const i=document.querySelector(`[data-k="${bad.k}"][data-j="${bad.j}"]`);i.classList.add('bad');i.scrollIntoView({block:'center'});i.focus();
+    return toast(bad.j?'Falta o número de repetições.':'Falta o peso. Se for só o corpo, digite 0.')}
+  if(!rows.length)return;
+  busy=true;count();
+  try{
+    if(!J('cfg',{}).url)throw new TypeError('sem link');
+    await post(rows);localStorage.removeItem('d'+T);toast(rows.length+' séries registradas. Bom treino!');
+    puxar().catch(()=>{});
+  }catch(e){
+    if(e instanceof TypeError){S('pend',[...J('pend',[]),rows]);localStorage.removeItem('d'+T);pend();toast('Sem conexão: treino guardado no celular e enviado depois.')}
+    else{toast('A planilha recusou: '+e.message)}
+  }
+  busy=false;render();
+};
+$('#pend').onclick=reenviar;
+$('#cfg').onclick=()=>{const c=J('cfg',{});$('#url').value=c.url||'';$('#tok').value=c.tok||'';$('#dlg').showModal()};
+$('#x').onclick=()=>$('#dlg').close();
+$('#save').onclick=async()=>{S('cfg',{url:$('#url').value.trim(),tok:$('#tok').value.trim()});$('#dlg').close();
+  try{await puxar();toast('Planilha conectada.');render();reenviar()}catch(e){toast('Não conectou: '+(e.message==='senha'?'senha incorreta.':'confira o link e a implantação.'))}};
+
+const esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+async function sendPlano(){const c=J('cfg',{});if(!c.url)return false;
+  try{const r=await fetch(c.url,{method:'POST',body:JSON.stringify({senha:c.tok,plano:P})});const j=await r.json();if(!j.ok)throw new Error(j.erro||'x');localStorage.removeItem('planoPend');return true}
+  catch(e){localStorage.setItem('planoPend','1');return false}}
+function edList(){$('#edl').innerHTML=E.ex.map((r,i)=>`<div class="er" data-i="${i}"><input class="en" value="${esc(r[0])}" placeholder="Nome do exercício" aria-label="Exercício"><div class="e2"><div><label>Séries</label><input class="ns" type="number" inputmode="numeric" min="1" max="10" value="${esc(r[1])}"></div><div><label>Repetições</label><input class="em" value="${esc(r[2])}" placeholder="8–12"></div></div><input class="eo" value="${esc(r[3]||'')}" placeholder="Nota (opcional)"><div class="eb"><button data-m="up" aria-label="Subir">↑</button><button data-m="dn" aria-label="Descer">↓</button><button data-m="rm">Remover</button></div></div>`).join('')}
+function openEd(){E=JSON.parse(JSON.stringify(P[T]));$('#edt').textContent='Editar treino '+T;$('#edn').value=E.n;edList();$('#ed').showModal()}
+$('#main').addEventListener('click',e=>{if(e.target.id==='edit')openEd()});
+$('#edn').addEventListener('input',e=>{E.n=e.target.value});
+$('#edl').addEventListener('input',e=>{const t=e.target,r=t.closest('.er');if(!r)return;const x=E.ex[r.dataset.i];
+  if(t.classList.contains('en'))x[0]=t.value;else if(t.classList.contains('ns'))x[1]=t.value;else if(t.classList.contains('em'))x[2]=t.value;else x[3]=t.value});
+$('#edl').addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;const i=+b.closest('.er').dataset.i,m=b.dataset.m,a=E.ex;
+  if(m==='rm')a.splice(i,1);else if(m==='up'&&i>0)[a[i-1],a[i]]=[a[i],a[i-1]];else if(m==='dn'&&i<a.length-1)[a[i+1],a[i]]=[a[i],a[i+1]];edList()});
+$('#eda').onclick=()=>{E.ex.push(['',3,'8–12','']);edList();const l=$('#edl').lastElementChild;l.scrollIntoView({block:'center'});l.querySelector('.en').focus()};
+$('#edx').onclick=()=>$('#ed').close();
+$('#edr').onclick=()=>{if(confirm('Voltar este treino para a versão original?')){E=JSON.parse(JSON.stringify(DEF[T]));$('#edn').value=E.n;edList()}};
+$('#eds').onclick=async()=>{
+  const ex=E.ex.map(r=>[String(r[0]).trim(),Math.min(10,Math.max(1,parseInt(r[1])||3)),String(r[2]).trim()||'8–12',String(r[3]||'').trim()]).filter(r=>r[0]);
+  if(!ex.length)return toast('Deixe pelo menos um exercício no treino.');
+  const nomes=ex.map(r=>r[0].toLowerCase());if(new Set(nomes).size!==nomes.length)return toast('Dois exercícios com o mesmo nome neste treino.');
+  P=JSON.parse(JSON.stringify(P));P[T]={n:(E.n||'').trim()||NOME[T],ex:ex.map(r=>r[3]?r:r.slice(0,3))};P.t=Date.now();S('plano',P);
+  $('#ed').close();render();
+  toast(await sendPlano()?'Treino salvo e guardado na planilha.':'Treino salvo neste celular. A cópia na planilha vai quando der.')};
+
+const fx=n=>Number(n).toLocaleString('pt-BR',{maximumFractionDigits:1});
+const pd=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const br=s=>s.slice(8,10)+'/'+s.slice(5,7);
+const wkKey=s=>{const x=pd(s);x.setDate(x.getDate()-(x.getDay()+6)%7);return iso(x)};
+function lineSVG(pts,max,goal){
+  const W=340,H=170,L=26,R=10,Tp=12,B=26,w=W-L-R,h=H-Tp-B,n=pts.length;
+  const X=i=>L+(n>1?i*w/(n-1):w/2),Y=v=>Tp+h-(v/max)*h;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolução da barra fixa">`;
+  for(let v=0;v<=max;v+=5)s+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" class="gl"/><text x="${L-5}" y="${Y(v)+4}" class="gt" text-anchor="end">${v}</text>`;
+  if(goal)s+=`<line x1="${L}" x2="${W-R}" y1="${Y(goal)}" y2="${Y(goal)}" class="goal"/><text x="${W-R}" y="${Y(goal)-5}" class="gt" text-anchor="end">meta ${goal}</text>`;
+  s+=`<polyline points="${pts.map((p,i)=>X(i)+','+Y(p.y)).join(' ')}" class="ln"/>`;
+  pts.forEach((p,i)=>{s+=`<circle cx="${X(i)}" cy="${Y(p.y)}" r="4" class="dot"/>`});
+  const st=Math.max(1,Math.ceil(n/5));
+  pts.forEach((p,i)=>{if(i===n-1||(i%st===0&&n-1-i>=st*.6))s+=`<text x="${X(i)}" y="${H-8}" class="gt" text-anchor="${i===n-1&&n>1?'end':'middle'}">${p.l}</text>`});
+  return s+'</svg>'}
+function barSVG(v,lb){
+  const W=340,H=150,L=8,R=8,Tp=18,B=24,n=v.length,bw=(W-L-R)/n,m=Math.max(1,...v),h=H-Tp-B;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Treinos por semana">`;
+  v.forEach((x,i)=>{const bh=x/m*h,cx=L+i*bw+bw/2;
+    s+=`<rect x="${cx-bw*.3}" y="${Tp+h-bh}" width="${bw*.6}" height="${x?Math.max(bh,2):0}" rx="4" class="bar1"/><text x="${cx}" y="${Tp+h-bh-5}" class="gt" text-anchor="middle">${x}</text><text x="${cx}" y="${H-7}" class="gt" text-anchor="middle">${lb[i]}</text>`});
+  return s+'</svg>'}
+async function painel(){
+  const c=J('cfg',{}),m=$('#main');
+  if(!c.url){m.innerHTML='<div class="banner">Para ver o painel, ligue a planilha em <b>Config</b>.</div>';return}
+  m.innerHTML='<p class="hint">Carregando seus treinos…</p>';
+  let aviso='';
+  try{const r=await fetch(c.url+'?senha='+encodeURIComponent(c.tok||'')+'&acao=historico');const j=await r.json();
+    if(!j.ok)throw new Error(j.erro||'erro');if(!j.linhas)throw new Error('versao');S('hist',j.linhas)}
+  catch(e){aviso=e.message==='versao'?'Atualize o Code.gs no Apps Script (nova versão) para o painel mostrar os dados.':e.message==='senha'?'Senha incorreta em Config.':'Sem conexão: mostrando os últimos dados salvos no celular.'}
+  if(T!=='D')return;
+  const rows=J('hist',[]).filter(v=>/^\d{4}-\d\d-\d\d$/.test(v[0])&&v[2]&&isFinite(+v[6])&&v[6]!=='').map(v=>({d:v[0],ex:v[2],p:+v[5]||0,r:+v[6]}));
+  const top=aviso?`<div class="banner">${aviso}</div>`:'';
+  if(!rows.length){m.innerHTML=top+'<p class="hint">Ainda não há treinos registrados. Registre o primeiro e o painel aparece aqui.</p>';return}
+  const h0=hoje(),dias=s=>Math.round((pd(h0)-pd(s))/864e5),dates=[...new Set(rows.map(r=>r.d))].sort(),ult=dias(dates[dates.length-1]);
+  const r30=rows.filter(r=>dias(r.d)<30),sess=new Set(r30.map(r=>r.d)).size;
+  let h=top+`<div class="tiles"><div class="tile"><b>${sess}</b><span>treinos nos últimos 30 dias</span></div><div class="tile"><b>${r30.length}</b><span>séries nos últimos 30 dias</span></div><div class="tile"><b>${ult<=0?'hoje':ult===1?'ontem':ult+'d'}</b><span>${ult>1?'desde o último treino':'último treino'}</span></div></div>`;
+  // barra fixa
+  const bf=rows.filter(r=>r.ex==='Barra fixa'&&r.p===0),bd={};bf.forEach(r=>{bd[r.d]=Math.max(bd[r.d]||0,r.r)});
+  const bk=Object.keys(bd).sort(),best=bk.length?Math.max(...bk.map(k=>bd[k])):0;
+  h+=`<section class="card"><h2 class="ph">Barra fixa: rumo às 20</h2>`;
+  if(bk.length){const mx=Math.max(20,Math.ceil(best/5)*5);
+    h+=`<p class="sub">Melhor série por treino, sem carga extra.</p><div class="big">${best} <small>de 20 repetições</small></div><div class="prog"><i style="width:${Math.min(100,best/20*100)}%"></i></div>${lineSVG(bk.map(k=>({l:br(k),y:bd[k]})),mx,20)}`}
+  else h+='<p class="sub">Registre a barra fixa com peso 0 (só o corpo) para acompanhar a evolução aqui.</p>';
+  h+='</section>';
+  // frequência
+  const x=pd(wkKey(h0));x.setDate(x.getDate()-49);const wk=[];for(let i=0;i<8;i++){wk.push(iso(x));x.setDate(x.getDate()+7)}
+  const cnt=wk.map(k=>new Set(rows.filter(r=>wkKey(r.d)===k).map(r=>r.d)).size);
+  h+=`<section class="card"><h2 class="ph">Treinos por semana</h2><p class="sub">Últimas 8 semanas (a semana começa na segunda). Média: ${fx(cnt.reduce((a,b)=>a+b,0)/8)} por semana.</p>${barSVG(cnt,wk.map(br))}</section>`;
+  // evolução por exercício
+  const ex={};rows.forEach(r=>{const o=(ex[r.ex]=ex[r.ex]||{}),q=(o[r.d]=o[r.d]||{p:0,r:0});q.p=Math.max(q.p,r.p);q.r=Math.max(q.r,r.r)});
+  let ev='';
+  Object.keys(ex).forEach(n=>{const ds=Object.keys(ex[n]).sort();if(ds.length<2)return;
+    const kg=ds.some(d=>ex[n][d].p>0),f=ex[n][ds[0]],l=ex[n][ds[ds.length-1]],a=kg?f.p:f.r,b=kg?l.p:l.r,dl=b-a,u=kg?'kg':'reps';
+    ev+=`<div class="evo"><b>${n}</b><span>${fx(a)} → ${fx(b)} ${u}</span><em class="chip ${dl>0?'up':dl<0?'dn':'eq'}" style="font-style:normal">${dl>0?'+':''}${fx(dl)}</em></div>`});
+  h+=`<section class="card"><h2 class="ph">Evolução por exercício</h2><p class="sub">Da primeira vez até a mais recente: maior carga (ou repetições, nos exercícios sem carga).</p>${ev||'<p class="sub">Aparece aqui depois de 2 treinos com o mesmo exercício.</p>'}</section>`;
+  m.innerHTML=h}
+
+$('#data').value=hoje();
+addEventListener('online',reenviar);
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+render();pend();puxar().then(render).catch(()=>{});reenviar();
+</script>
+</body>
+</html>
